@@ -29,3 +29,6 @@ clean:
 	rm -rf build
 
 check: pre-commit test
+
+changelog:
+	poetry run gitchangelog > CHANGELOG.md

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clocklock"
-version = "0.1.0"
+version = "1.0.0"
 description = "A versatile Python utility geared towards efficient time management in your code. This library provides an easy-to-use decorator and a direct function runner that allows Python functions to be executed with a specified timeout limit. If the function exceeds the allotted time, an optional fallback function can be triggered, ensuring smooth control flow. Ideal for keeping your Python functions in check and guaranteeing they never outstay their welcome. Just set the time, lock it in, and let ClockLock handle the rest. Working with Python has never been more punctual!"
 authors = ["Ram <r4mbhardwaj@gmail.com>"]
 packages = [
@@ -11,6 +11,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3"
 bumpversion = "^0.6.0"
+gitchangelog = "^3.0.4"
 
 
 [build-system]
