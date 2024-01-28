@@ -2,13 +2,14 @@ Changelog
 =========
 
 
-(unreleased)
-------------
-- Bump version: 1.0.0 → 1.0.1. [Ram]
-- Merge pull request #3 from r4mbhardwaj/enhancement/multithreaded-
-  timeout. [hxxter]
+Upcoming
+--------
+- Finalize changelog for 1.0.1 release. [Ram]
 
-  Multithreaded Timeout
+
+v1.0.1 (2024-01-28)
+-------------------
+- Bump version: 1.0.0 → 1.0.1. [Ram]
 - Refactor function timeout implementation. [Ram]
 - Add test for running functions with timeout in multiple threads. [Ram]
 - Add test case for threading with timeout decorator. [Ram]
