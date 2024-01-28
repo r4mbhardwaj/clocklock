@@ -1,27 +1,13 @@
 """Provides a decorator for function timeout."""
 
 
-import signal
 from functools import wraps
 import inspect
+import threading
 
 
 class TimeoutException(Exception):
     """Exception raised when a timeout occurs."""
-
-
-def _timeout_handler(signum, frame):
-    """
-    Timeout handler function that raises a TimeoutException.
-
-    Args:
-        signum (int): The signal number.
-        frame (frame): The current stack frame.
-
-    Raises:
-        TimeoutException: Exception indicating a timeout occurred.
-    """
-    raise TimeoutException()
 
 
 def timeout(seconds=1, fallback=lambda: "Function timed out!"):
@@ -39,22 +25,41 @@ def timeout(seconds=1, fallback=lambda: "Function timed out!"):
         function: The decorated function with the timeout functionality.
     """
 
+    class TimeoutThread(threading.Thread):
+        def __init__(self, function, args, kwargs):
+            super().__init__()
+            self.function = function
+            self.args = args
+            self.kwargs = kwargs
+            self.result = None
+            self.exception = None
+            self.event = threading.Event()
+
+        def run(self):
+            try:
+                self.result = self.function(*self.args, **self.kwargs)
+            except Exception as exc:
+                self.exception = exc
+            self.event.set()
+
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            signal.signal(signal.SIGALRM, _timeout_handler)
-            signal.alarm(seconds)
-            try:
-                result = func(*args, **kwargs)
-            except TimeoutException:
-                # Check if fallback needs arguments
+            timeout_thread = TimeoutThread(func, args, kwargs)
+            timeout_thread.start()
+            timeout_thread.event.wait(timeout=seconds)
+
+            if not timeout_thread.event.is_set():
+                # The function did not finish before the timeout
                 if inspect.signature(fallback).parameters:
-                    result = fallback(*args, **kwargs)
+                    return fallback(*args, **kwargs)
                 else:
-                    result = fallback()
-            finally:
-                signal.alarm(0)
-            return result
+                    return fallback()
+
+            if timeout_thread.exception:
+                raise timeout_thread.exception
+
+            return timeout_thread.result
 
         return wrapper
 
