@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "clocklock"
-version = "1.0.0"
+version = "1.0.1"
 description = "A streamlined Python utility that enforces timeouts on your Python functions. It features a decorator and a function runner, both with provision for fallback functionality. Keep your code efficient and punctual, maintaining smooth control flow with ClockLock. Timing your Python functions has never been easier."
 authors = ["Ram <r4mbhardwaj@gmail.com>"]
 packages = [
