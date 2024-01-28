@@ -1,0 +1,126 @@
+# Changelog configuration for gitchangelog.
+
+# Semantic Versioning is used for tags with optional leading 'v'
+tag_filter_regexp = r'^v?(\d+\.\d+\.\d+(?:-\w+)?(?:\+\w+)?)$'
+
+# Title of each section
+sections = [
+    ("Added", "New Features"),
+    ("Changed", "Improvements"),
+    ("Deprecated", "Deprecations"),
+    ("Removed", "Removals"),
+    ("Fixed", "Bug Fixes"),
+    ("Security", "Security Issues"),
+    ("Performance", "Performance Improvements"),
+    ("Other", "Other Changes"),
+]
+
+# Regular expressions that categorize the commit messages into sections
+matchers = {
+    "Added": r'^Add\b|^\[FEATURE\]',
+    "Changed": r'^Update\b|^\[IMPROVE\]',
+    "Deprecated": r'^Deprecate\b',
+    "Removed": r'^Remove\b|^\[REMOVE\]',
+    "Fixed": r'^Fix\b|^\[FIX\]',
+    "Security": r'^\s*security\b',
+    "Performance": r'^\s*perf\b',
+    "Other": r'^\s*docs\b',
+}
+
+# Exclude certain commits from the changelog
+ignore_regexps = [r'^Minor\W', r'^\s*wip\b', r'^Merge\W']
+
+# Include or exclude merge commits from the changelog
+include_merge = False
+
+# Entry format for the changelog
+entry_format = u"- {summary} ([#{ticket}](https://github.com/username/repository/issues/{ticket}), [{short_hash}](https://github.com/username/repository/commit/{hash}))"
+
+# Labels for the different types of versions
+unreleased_version_label = "Upcoming"
+
+# Patterns for parsing issue and commit information
+issue_pattern = r'#(\d+)'
+commit_pattern = r'\b([0-9a-f]{6,40})\b'
+
+# Define patterns for authors
+include_author = True
+author_format = u" by **{author}**"
+
+# The changelog template can incorporate additional stats or custom layout
+changelog_template = u"""# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+{{Unreleased}}
+
+{% for version, sections in changelog.items() %}
+{% if version %}
+## [{{version}}] - {{date}}
+{% if sections.Header %}
+### Summary
+{{sections.Header.body}}
+{% endif %}
+{% for group, entries in sections.items() %}
+{% if group and group != "Header" %}
+### {{group}}
+{% for entry in entries %}
+{{entry.entry}}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+"""
+
+# Ignore any commit messages for standard merge commits
+ignore_regexps = [
+    r"Merge branch '.*' (into|of) .*",
+    r"Merge remote-tracking branch '.*'",
+    r"Merge pull request #.*",
+]
+
+from collections import OrderedDict
+
+
+# Define your sections and their corresponding matcher expressions
+sections = OrderedDict([
+    ('Feature', {
+        'match': "^(feature|feat|add):",
+        'order': 10,
+    }),
+    ('Fix', {
+        'match': "^(fix|bugfix):",
+        'order': 20,
+    }),
+    ('Performance', {
+        'match': "^(perf):",
+        'order': 30,
+    }),
+    ('Documentation', {
+        'match': "^(docs|doc):",
+        'order': 40,
+    }),
+    ('...', {
+        'match': ".*",
+        'order': 50,
+    }),
+])
+
+# Customize the format for each entry type
+body_formats = {
+    'Feature': "- {summary} ([#{ticket}]({issue_tracker_url}))",
+    'Fix': "- {summary} ([#{ticket}]({issue_tracker_url}))",
+    'Performance': "- {summary} ([#{ticket}]({issue_tracker_url}))",
+    'Documentation': "- {summary}",
+    '...': "- {summary}",
+}
+
+# Define the URL patterns for commits and issues
+issue_tracker_url = "https://github.com/r4mbhardwaj/clocklock/issues/{issue}"
+commit_url = "https://github.com/r4mbhardwaj/clocklock/commit/{commit}"
